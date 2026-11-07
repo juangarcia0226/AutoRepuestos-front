@@ -1,7 +1,7 @@
 # AutoRepuestos
 
 Prototipo de un sistema de gestión de inventario para una tienda de repuestos de vehículos.
-Desarrollado con React + Vite, Bootstrap 5 (por CDN) y datos simulados guardados en LocalStorage.
+Desarrollado con React + Vite, Bootstrap 5.
 
 ## Funcionalidades
 
@@ -48,7 +48,7 @@ La primera vez que se abre la app, los datos de `src/data/` se copian a LocalSto
 Para restaurar los datos iniciales, abre las herramientas del navegador (F12) →
 Application → Local Storage, borra las claves `autorepuestos:*` y recarga la página.
 
-## Próximos pasos
+## Próximas actualizaciones
 
 - Agregar, editar y eliminar productos.
 - Registrar entradas y salidas de stock.

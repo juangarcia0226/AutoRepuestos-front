@@ -45,9 +45,6 @@ src/
 La primera vez que se abre la app, los datos de `src/data/` se copian a LocalStorage
 (claves con el prefijo `autorepuestos:`). A partir de ahí la app lee desde LocalStorage.
 
-Para restaurar los datos iniciales, abre las herramientas del navegador (F12) →
-Application → Local Storage, borra las claves `autorepuestos:*` y recarga la página.
-
 ## Próximas actualizaciones
 
 - Agregar, editar y eliminar productos.

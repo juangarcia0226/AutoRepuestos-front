@@ -1,0 +1,45 @@
+/* variables y componentes compartidos */
+:root {
+  --grafito: #1c2530;
+  --acero: #3a4857;
+  --señal: #f2b705;
+  --señal-oscuro: #d9a304;
+  --fondo: #f3f4f6;
+  --alerta: #c62828;
+  --bs-body-font-family: 'Barlow', system-ui, sans-serif;
+  --bs-body-bg: var(--fondo);
+  --bs-body-color: #1f2933;
+}
+h1, h2, h3, h4, h5, .marca-logo { 
+  font-family: 'Barlow Condensed', sans-serif; 
+  letter-spacing: .3px; 
+}
+
+.marca-logo { 
+  font-size: 1.8rem; 
+  font-weight: 700; 
+  color: #fff; display: flex; 
+  align-items: center; 
+  gap: .6rem; 
+}
+.marca-logo i { 
+  color: var(--señal); 
+}
+.marca-logo-oscuro { 
+  color: var(--grafito); 
+}
+
+.btn-señal { background: var(--señal); 
+  border-color: var(--señal); 
+  color: var(--grafito); 
+  font-weight: 600; 
+}
+.btn-señal:hover, .btn-señal:focus { 
+  background: var(--señal-oscuro); 
+  border-color: var(--señal-oscuro); 
+  color: var(--grafito); 
+}
+.form-control:focus { 
+  border-color: var(--señal); 
+  box-shadow: 0 0 0 .2rem rgba(242,183,5,.3); 
+}

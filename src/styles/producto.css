@@ -1,0 +1,26 @@
+/* ===== AutoRepuestos · detalle del repuesto ===== */
+.prod-panel { background: #fff; border: 1px solid #e3e6ea; border-radius: .5rem; overflow: hidden; height: 100%; }
+.prod-panel-cabecera { padding: 1rem 1.25rem; border-bottom: 1px solid #e3e6ea; }
+.prod-panel-titulo { font-size: 1.35rem; font-weight: 700; margin: 0; color: var(--grafito); }
+.prod-cuerpo { padding: 1.25rem; }
+
+.prod-imagen { height: 17rem; background: #f3f4f6; display: flex; align-items: center; justify-content: center; }
+.prod-imagen i { font-size: 6rem; color: #b6bfca; }
+
+.prod-nombre { font-size: 2rem; font-weight: 700; color: var(--grafito); margin: 0 0 .25rem; }
+.prod-precio { font-family: 'Barlow Condensed', sans-serif; font-size: 2.3rem; font-weight: 700; color: var(--grafito); line-height: 1.1; }
+
+.prod-datos { display: grid; grid-template-columns: 9rem 1fr; gap: .6rem 1rem; margin: 1.25rem 0; }
+.prod-datos dt { color: #6b7785; font-weight: 500; }
+.prod-datos dd { margin: 0; color: var(--grafito); }
+.prod-referencia { font-family: ui-monospace, Consolas, monospace; color: var(--acero); }
+
+.prod-ubicacion { display: flex; align-items: center; gap: .75rem; padding: .8rem 1rem; background: #fff8e1; border-left: 5px solid var(--señal); border-radius: .35rem; margin-bottom: 1.25rem; }
+.prod-ubicacion i { font-size: 1.5rem; color: var(--señal-oscuro); }
+.prod-ubicacion small { display: block; color: #6b7785; }
+
+.prod-acciones { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+@media (max-width: 575.98px) {
+  .prod-datos { grid-template-columns: 7.5rem 1fr; }
+}

@@ -1,0 +1,94 @@
+.veh-buscador { 
+    background: #fff; 
+    border: 1px solid #e3e6ea; 
+    border-top: 5px solid var(--señal); 
+    border-radius: .5rem; 
+    padding: 1.25rem; 
+}
+.veh-buscador-titulo { 
+    font-size: 1.5rem; 
+    font-weight: 700; 
+    color: var(--grafito); 
+    margin-bottom: 1rem; 
+}
+
+.veh-resumen { 
+    font-size: 1.3rem; 
+    font-weight: 700; 
+    color: var(--grafito); 
+    margin: 1.75rem 0 1rem; 
+}
+.veh-vacio { 
+    background: #fff; 
+    border: 1px dashed #c3ccd6; 
+    border-radius: .5rem; 
+    padding: 2rem 1.25rem; 
+    text-align: center; 
+    color: #6b7785; 
+    margin-top: 1.5rem; 
+}
+.veh-vacio i { 
+    font-size: 2.5rem; 
+    color: #b6bfca; 
+    display: block; 
+    margin-bottom: .5rem; 
+}
+
+.veh-tarjeta {
+    background: #fff;
+    border: 1px solid #e3e6ea;
+    border-radius: .5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.veh-tarjeta.sin-stock {
+    background: #fafafa;
+}
+.veh-tarjeta.sin-stock .veh-nombre,
+.veh-tarjeta.sin-stock .veh-precio {
+    color: #8a94a0;
+}
+.veh-tarjeta-cuerpo {
+    padding: 1rem 1.1rem;
+    flex: 1;
+}
+.veh-nombre {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--grafito);
+    margin: 0 0 .25rem;
+}
+.veh-dato {
+    color: #6b7785;
+    font-size: .95rem;
+}
+.veh-referencia {
+    font-family: ui-monospace, Consolas, monospace;
+    color: var(--acero);
+}
+.veh-compat {
+    margin-top: .75rem;
+    padding: .5rem .7rem;
+    background: #f3f4f6;
+    border-radius: .35rem;
+    font-size: .92rem;
+    color: var(--acero);
+}
+.veh-compat i {
+    color: #2e7d32;
+}
+.veh-tarjeta-pie {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .8rem 1.1rem;
+    border-top: 1px solid #eef0f2;
+}
+.veh-precio {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--grafito);
+}

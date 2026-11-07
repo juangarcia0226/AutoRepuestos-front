@@ -1,0 +1,77 @@
+/* dashboard */
+.dash-tarjeta { 
+    background: #fff; 
+    border-radius: .5rem; 
+    padding: 1.1rem 1.25rem; 
+    border-left: 5px solid var(--acero); 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    height: 100%; 
+}
+.dash-tarjeta.bajo { 
+    border-left-color: var(--señal); 
+}
+.dash-tarjeta.agotado { 
+    border-left-color: var(--alerta); 
+}
+.dash-tarjeta-valor { 
+    font-family: 'Barlow Condensed', sans-serif; 
+    font-size: 2.6rem; 
+    font-weight: 700; 
+    line-height: 1; 
+    color: var(--grafito); 
+}
+.dash-tarjeta-texto { 
+    color: #6b7785; 
+}
+.dash-tarjeta i { 
+    font-size: 2rem; 
+    color: #b6bfca; 
+}
+
+.dash-panel { 
+    background: #fff; 
+    border-radius: .5rem; 
+    border: 1px solid #e3e6ea; 
+}
+.dash-panel-cabecera { 
+    padding: 1rem 1.25rem; 
+    border-bottom: 1px solid #e3e6ea; 
+}
+.dash-panel-titulo { 
+    font-size: 1.35rem; 
+    font-weight: 700; 
+    margin: 0; 
+    color: var(--grafito); 
+}
+
+.dash-tabla thead th { 
+    background: #f3f4f6; 
+    font-weight: 600; 
+    color: var(--acero); 
+    white-space: nowrap; 
+}
+.dash-tabla td { 
+    vertical-align: middle; 
+}
+.dash-tabla .producto-enlace { 
+    color: var(--grafito); 
+    font-weight: 600; 
+    text-decoration: none; 
+}
+.dash-tabla .producto-enlace:hover { 
+    color: var(--señal-oscuro); 
+    text-decoration: underline; 
+}
+.dash-referencia { 
+    font-family: ui-monospace, Consolas, monospace; 
+    font-size: .9rem; 
+    color: var(--acero); 
+}
+
+.dash-vacio { 
+    padding: 1.25rem; 
+    color: #6b7785; 
+    margin: 0; 
+}

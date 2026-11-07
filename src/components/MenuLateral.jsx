@@ -16,7 +16,12 @@ export default function MenuLateral() {
 
   return (
     <aside className="menu-lateral">
-      <div className="offcanvas-lg offcanvas-start" tabIndex="-1" id="menu" aria-label="Menú principal">
+      <div
+        className="offcanvas-lg offcanvas-start"
+        tabIndex="-1"
+        id="menu"
+        aria-label="Menú principal"
+      >
         <div className="offcanvas-header d-lg-none">
           <div className="marca-logo">
             <i className="bi bi-gear-wide-connected"></i> AutoRepuestos
@@ -38,14 +43,18 @@ export default function MenuLateral() {
           <nav className="menu-nav">
             <NavLink
               to="/dashboard"
-              className={({ isActive }) => `menu-enlace ${inventarioActivo(isActive) ? 'activo' : ''}`}
+              className={({ isActive }) =>
+                `menu-enlace ${inventarioActivo(isActive) ? "activo" : ""}`
+              }
               onClick={cerrarMenu}
             >
               <i className="bi bi-box-seam"></i> Inventario
             </NavLink>
             <NavLink
               to="/vehiculos"
-              className={({ isActive }) => `menu-enlace ${isActive ? 'activo' : ''}`}
+              className={({ isActive }) =>
+                `menu-enlace ${isActive ? "activo" : ""}`
+              }
               onClick={cerrarMenu}
             >
               <i className="bi bi-car-front"></i> Buscar por vehículo
@@ -57,10 +66,11 @@ export default function MenuLateral() {
               <i className="bi bi-person-circle"></i> {usuario?.nombre}
             </div>
             <button className="btn btn-sm btn-outline-light w-100" onClick={cerrarSesion}>
+              <i className="bi bi-box-arrow-left"></i> Cerrar sesión
             </button>
           </div>
         </div>
       </div>
     </aside>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-export default function ListaMovimientos({ movimientos, productos }) {
+export default function ListaMovimientos({ movimientos }) {
   return (
     <section className="dash-panel">
       <div className="dash-panel-cabecera">
@@ -10,14 +10,13 @@ export default function ListaMovimientos({ movimientos, productos }) {
       ) : (
         <ul className="dash-lista">
           {movimientos.map((m) => {
-            const producto = productos.find((p) => p.id === m.productoId)
             const entrada = m.tipo === 'entrada'
             return (
               <li key={m.id}>
                 <i className={`bi ${entrada ? 'bi-arrow-down-circle-fill text-success' : 'bi-arrow-up-circle-fill text-danger'}`}></i>
                 <div>
                   <span className="fw-semibold">
-                    {entrada ? 'Entrada' : 'Salida'}: {m.cantidad} × {producto?.nombre ?? 'Producto eliminado'}
+                    {entrada ? 'Entrada' : 'Salida'}: {m.cantidad} × {m.producto}
                   </span>
                   <small>{m.fecha} · {m.usuario}</small>
                 </div>

@@ -1,24 +1,26 @@
 import { useState } from 'react'
 import { AuthContext } from './AuthContext'
 import { leer, guardar, eliminar } from '../services/storage'
-import { USUARIO_DEMO } from '../data/usuarios'
+import { login } from '../services/authService'
 
 export function AuthProvider({ children }) {
-  // La sesión se recupera de LocalStorage
-  const [usuario, setUsuario] = useState(() => leer('sesion'))
+  // La sesión solo es válida si también hay token (descarta sesiones del login simulado anterior)
+  const [usuario, setUsuario] = useState(() => (leer('token') ? leer('sesion') : null))
 
-  function iniciarSesion(correo, clave) {
-    const correoOk = correo.trim().toLowerCase() === USUARIO_DEMO.correo
-    if (correoOk && clave === USUARIO_DEMO.clave) {
-      const sesion = { correo: USUARIO_DEMO.correo, nombre: USUARIO_DEMO.nombre }
-      guardar('sesion', sesion)
-      setUsuario(sesion)
+  async function iniciarSesion(correo, clave) {
+    try {
+      const { token, usuario: datos } = await login(correo, clave)
+      guardar('token', token)
+      guardar('sesion', datos)
+      setUsuario(datos)
       return { ok: true }
+    } catch (e) {
+      return { ok: false, error: e.message }
     }
-    return { ok: false, error: 'Correo o contraseña incorrectos. Revisa tus datos e inténtalo de nuevo.' }
   }
 
   function cerrarSesion() {
+    eliminar('token')
     eliminar('sesion')
     setUsuario(null)
   }

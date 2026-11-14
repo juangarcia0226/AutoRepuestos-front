@@ -1,11 +1,6 @@
 import { Link } from 'react-router-dom'
-import { estadoStock } from '../utils/estadoStock'
 
-export default function ListaAlertas({ productos }) {
-  const alertas = productos
-    .filter((p) => estadoStock(p).clave !== 'disponible')
-    .sort((a, b) => a.stock - b.stock)
-
+export default function ListaAlertas({ alertas }) {
   return (
     <section className="dash-panel">
       <div className="dash-panel-cabecera">

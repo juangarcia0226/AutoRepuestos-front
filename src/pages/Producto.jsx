@@ -1,9 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { obtenerProductoPorId, obtenerVehiculosCompatibles } from '../services/inventarioService'
+import { obtenerProducto } from '../services/inventarioApi'
+import { useCarga } from '../hooks/useCarga'
 import { formatearPrecio } from '../utils/formato'
 import { estadoStock } from '../utils/estadoStock'
 import TablaCompatibles from '../components/TablaCompatibles'
+import EstadoCarga from '../components/EstadoCarga'
 import Aviso from '../components/Aviso'
 
 // Ícono de marcador de posición según la categoría (mientras no haya fotos reales)
@@ -20,17 +22,22 @@ const ICONOS = {
 
 export default function Producto() {
   const { id } = useParams()
-  const producto = useMemo(() => obtenerProductoPorId(id), [id])
-  const compatibles = useMemo(() => obtenerVehiculosCompatibles(id), [id])
+  const cargar = useCallback(() => obtenerProducto(id), [id])
+  const { datos: producto, cargando, error, recargar } = useCarga(cargar)
   const [aviso, setAviso] = useState(null)
 
-  if (!producto) {
+  if (cargando) return <EstadoCarga cargando />
+
+  if (error) {
     return (
       <div className="veh-vacio">
         <i className="bi bi-exclamation-circle"></i>
-        No existe un repuesto con el id {id}.
-        <div className="mt-3">
-          <Link className="btn btn-outline-dark" to="/dashboard">
+        {error}
+        <div className="mt-3 d-flex justify-content-center gap-2">
+          <button type="button" className="btn btn-outline-dark" onClick={recargar}>
+            <i className="bi bi-arrow-clockwise"></i> Reintentar
+          </button>
+          <Link className="btn btn-outline-secondary" to="/dashboard">
             <i className="bi bi-arrow-left"></i> Volver al inventario
           </Link>
         </div>
@@ -111,7 +118,7 @@ export default function Producto() {
         </div>
       </div>
 
-      <TablaCompatibles vehiculos={compatibles} />
+      <TablaCompatibles vehiculos={producto.compatibilidad ?? []} />
 
       <Aviso mensaje={aviso} visible={aviso !== null} onCerrar={() => setAviso(null)} />
     </>

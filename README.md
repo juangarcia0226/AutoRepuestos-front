@@ -1,24 +1,37 @@
 # AutoRepuestos
 
-Prototipo de un sistema de gestión de inventario para una tienda de repuestos de vehículos.
-Desarrollado con React + Vite, Bootstrap 5.
+Sistema de gestión de inventario para una tienda de repuestos de vehículos.
+Desarrollado con React + Vite y Bootstrap 5 (por CDN), conectado a la API de AutoRepuestos.
 
 ## Funcionalidades
 
-- **Login** con validación y sesión simulada.
+- **Login** con validación y sesión mediante token JWT.
 - **Inventario:** tarjetas de resumen, tabla con buscador, alertas de stock y últimos movimientos.
+- **Productos:** crear, editar y ver el detalle con su ubicación en la tienda.
+- **Compatibilidad:** agregar y quitar los vehículos compatibles de cada repuesto.
+- **Movimientos:** registrar entradas y salidas de stock.
 - **Buscar por vehículo:** marca, modelo y año para listar los repuestos compatibles.
-- **Detalle del repuesto:** datos, ubicación en la tienda y vehículos compatibles.
+- **Catálogo de vehículos:** crear, editar y eliminar vehículos.
 
 ## Requisitos
 
 - Node.js (versión LTS reciente)
+- El backend de AutoRepuestos en ejecución
 
 ## Instalación y uso
 
 ```bash
 npm install
+cp .env.example .env     # y ajustar VITE_API_URL si el backend usa otra dirección
 npm run dev
+```
+
+Otros comandos:
+
+```bash
+npm run build     # genera la versión de producción en /dist
+npm run preview   # sirve esa versión para probarla
+npm run lint      # revisa el código con ESLint
 ```
 
 ## Cuenta de prueba
@@ -30,23 +43,25 @@ npm run dev
 
 ```
 src/
-├── components/   piezas reutilizables (menú, tarjetas, tablas, formularios)
+├── components/   piezas reutilizables (menú, tarjetas, tablas, formularios, ventanas)
 ├── context/      sesión del usuario (AuthProvider, useAuth)
-├── data/         datos iniciales (productos, vehículos, compatibilidad, movimientos)
-├── pages/        Login, Dashboard, Vehiculos, Producto
+├── hooks/        useCarga: carga de datos con estados de carga y error
+├── pages/        Login, Dashboard, Vehiculos, CatalogoVehiculos, Producto
 ├── routers/      rutas de la app, ruta pública y ruta protegida
-├── services/     acceso a LocalStorage y operaciones sobre el inventario
+├── services/     cliente de la API (api.js, authService, inventarioApi) y storage
 ├── styles/       estilos por pantalla
-└── utils/        formato de precios y estado de stock
+└── utils/        formato de precios y fechas, estado de stock
 ```
 
-## Datos y LocalStorage
+## Datos y sesión
 
-La primera vez que se abre la app, los datos de `src/data/` se copian a LocalStorage
-(claves con el prefijo `autorepuestos:`). A partir de ahí la app lee desde LocalStorage.
+Los datos viven en MongoDB Atlas y se consultan a través de la API
+(`VITE_API_URL`). El token de sesión se guarda en LocalStorage con la clave
+`autorepuestos:token`; si vence, la app vuelve al login.
 
-## Próximas actualizaciones
+## Próximos pasos
 
-- Agregar, editar y eliminar productos.
-- Registrar entradas y salidas de stock.
-- Conectar un backend real.
+- Eliminar productos desde la interfaz.
+- Ajustar automáticamente los rangos de años de los productos al cambiar un vehículo.
+- Gestión de usuarios y roles.
+- Despliegue del backend y del front.

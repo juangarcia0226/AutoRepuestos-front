@@ -5,6 +5,7 @@ const TITULOS = [
   { ruta: '/dashboard', titulo: 'Inventario' },
   { ruta: '/vehiculos', titulo: 'Buscar por vehículo' },
   { ruta: '/producto', titulo: 'Detalle del repuesto' },
+  { ruta: '/catalogo', titulo: 'Catálogo de vehículos' },
 ]
 
 export default function LayoutPrivado() {

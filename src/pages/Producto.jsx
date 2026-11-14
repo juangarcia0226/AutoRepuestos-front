@@ -1,32 +1,55 @@
-import { useCallback, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { obtenerProducto } from '../services/inventarioApi'
-import { useCarga } from '../hooks/useCarga'
-import { formatearPrecio } from '../utils/formato'
-import { estadoStock } from '../utils/estadoStock'
-import TablaCompatibles from '../components/TablaCompatibles'
-import EstadoCarga from '../components/EstadoCarga'
-import Aviso from '../components/Aviso'
+import { useCallback, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { obtenerProducto, actualizarProducto } from "../services/inventarioApi";
+import { useCarga } from "../hooks/useCarga";
+import { formatearPrecio } from "../utils/formato";
+import { estadoStock } from "../utils/estadoStock";
+import TablaCompatibles from "../components/TablaCompatibles";
+import EstadoCarga from "../components/EstadoCarga";
+import Aviso from "../components/Aviso";
+import ModalMovimiento from "../components/ModalMovimiento";
+import ModalProducto from "../components/ModalProducto";
+import ModalCompatibilidad from "../components/ModalCompatibilidad";
 
 // Ícono de marcador de posición según la categoría (mientras no haya fotos reales)
 const ICONOS = {
-  Filtros: 'bi-funnel',
-  Frenos: 'bi-disc',
-  Encendido: 'bi-lightning-charge',
-  Suspensión: 'bi-arrows-vertical',
-  Motor: 'bi-gear',
-  Eléctrico: 'bi-battery-charging',
-  Transmisión: 'bi-gear-wide',
-  Accesorios: 'bi-tools',
-}
+  Filtros: "bi-funnel",
+  Frenos: "bi-disc",
+  Encendido: "bi-lightning-charge",
+  Suspensión: "bi-arrows-vertical",
+  Motor: "bi-gear",
+  Eléctrico: "bi-battery-charging",
+  Transmisión: "bi-gear-wide",
+  Accesorios: "bi-tools",
+};
 
 export default function Producto() {
-  const { id } = useParams()
-  const cargar = useCallback(() => obtenerProducto(id), [id])
-  const { datos: producto, cargando, error, recargar } = useCarga(cargar)
-  const [aviso, setAviso] = useState(null)
+  const { id } = useParams();
+  const cargar = useCallback(() => obtenerProducto(id), [id]);
+  const { datos: producto, cargando, error, recargar } = useCarga(cargar);
+  const [aviso, setAviso] = useState(null);
+  const [modal, setModal] = useState(null); // null | 'entrada' | 'salida'
+  const [editando, setEditando] = useState(false);
+  const [agregandoCompat, setAgregandoCompat] = useState(false);
 
-  if (cargando) return <EstadoCarga cargando />
+  async function quitarCompatibilidad(vehiculo) {
+    const nombre = `${vehiculo.marca} ${vehiculo.modelo}`;
+    if (!window.confirm(`¿Quitar ${nombre} de los vehículos compatibles?`))
+      return;
+
+    try {
+      const compatibilidad = (producto.compatibilidad ?? []).filter(
+        (c) => !(c.marca === vehiculo.marca && c.modelo === vehiculo.modelo),
+      );
+      await actualizarProducto(producto.id, { compatibilidad });
+      setAviso(`Vehículo quitado: ${nombre}.`);
+      recargar();
+    } catch (e) {
+      setAviso(e.message);
+    }
+  }
+
+  if (cargando) return <EstadoCarga cargando />;
 
   if (error) {
     return (
@@ -34,7 +57,11 @@ export default function Producto() {
         <i className="bi bi-exclamation-circle"></i>
         {error}
         <div className="mt-3 d-flex justify-content-center gap-2">
-          <button type="button" className="btn btn-outline-dark" onClick={recargar}>
+          <button
+            type="button"
+            className="btn btn-outline-dark"
+            onClick={recargar}
+          >
             <i className="bi bi-arrow-clockwise"></i> Reintentar
           </button>
           <Link className="btn btn-outline-secondary" to="/dashboard">
@@ -42,25 +69,35 @@ export default function Producto() {
           </Link>
         </div>
       </div>
-    )
+    );
   }
 
-  const estado = estadoStock(producto)
+  const estado = estadoStock(producto);
 
   return (
     <>
       <nav aria-label="Ruta de navegación">
         <ol className="breadcrumb">
-          <li className="breadcrumb-item"><Link to="/dashboard">Inventario</Link></li>
-          <li className="breadcrumb-item active" aria-current="page">{producto.nombre}</li>
+          <li className="breadcrumb-item">
+            <Link to="/dashboard">Inventario</Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {producto.nombre}
+          </li>
         </ol>
       </nav>
 
       <div className="row g-4 mb-4">
         <div className="col-12 col-lg-5">
           <div className="prod-panel">
-            <div className="prod-imagen" role="img" aria-label={`Imagen de ${producto.nombre}`}>
-              <i className={`bi ${ICONOS[producto.categoria] ?? 'bi-box-seam'}`}></i>
+            <div
+              className="prod-imagen"
+              role="img"
+              aria-label={`Imagen de ${producto.nombre}`}
+            >
+              <i
+                className={`bi ${ICONOS[producto.categoria] ?? "bi-box-seam"}`}
+              ></i>
             </div>
           </div>
         </div>
@@ -72,7 +109,9 @@ export default function Producto() {
                 <h2 className="prod-nombre">{producto.nombre}</h2>
                 <span className={`badge ${estado.clase}`}>{estado.texto}</span>
               </div>
-              <div className="prod-precio">{formatearPrecio(producto.precio)}</div>
+              <div className="prod-precio">
+                {formatearPrecio(producto.precio)}
+              </div>
 
               <dl className="prod-datos">
                 <dt>Marca</dt>
@@ -82,7 +121,9 @@ export default function Producto() {
                 <dt>Categoría</dt>
                 <dd>{producto.categoria}</dd>
                 <dt>Stock</dt>
-                <dd>{producto.stock} unidades (mínimo {producto.stockMinimo})</dd>
+                <dd>
+                  {producto.stock} unidades (mínimo {producto.stockMinimo})
+                </dd>
               </dl>
 
               <div className="prod-ubicacion">
@@ -97,7 +138,7 @@ export default function Producto() {
                 <button
                   type="button"
                   className="btn btn-señal"
-                  onClick={() => setAviso('Editar productos estará disponible en una próxima versión.')}
+                  onClick={() => setEditando(true)}
                 >
                   <i className="bi bi-pencil-square"></i> Editar
                 </button>
@@ -105,11 +146,21 @@ export default function Producto() {
                   type="button"
                   className="btn btn-outline-dark"
                   disabled={producto.stock === 0}
-                  onClick={() => setAviso('Registrar salidas estará disponible en una próxima versión.')}
+                  onClick={() => setModal("salida")}
                 >
                   <i className="bi bi-box-arrow-up"></i> Registrar salida
                 </button>
-                <Link className="btn btn-outline-secondary ms-lg-auto" to="/dashboard">
+                <button
+                  type="button"
+                  className="btn btn-outline-dark"
+                  onClick={() => setModal("entrada")}
+                >
+                  <i className="bi bi-box-arrow-in-down"></i> Registrar entrada
+                </button>
+                <Link
+                  className="btn btn-outline-secondary ms-lg-auto"
+                  to="/dashboard"
+                >
                   <i className="bi bi-arrow-left"></i> Volver al inventario
                 </Link>
               </div>
@@ -118,9 +169,56 @@ export default function Producto() {
         </div>
       </div>
 
-      <TablaCompatibles vehiculos={producto.compatibilidad ?? []} />
+      <TablaCompatibles
+        vehiculos={producto.compatibilidad ?? []}
+        onAgregar={() => setAgregandoCompat(true)}
+        onQuitar={quitarCompatibilidad}
+      />
 
-      <Aviso mensaje={aviso} visible={aviso !== null} onCerrar={() => setAviso(null)} />
+      {modal && (
+        <ModalMovimiento
+          tipo={modal}
+          producto={producto}
+          onCerrar={() => setModal(null)}
+          onRegistrado={(cantidad) => {
+            setAviso(
+              `${modal === "salida" ? "Salida" : "Entrada"} registrada: ${cantidad} unidades.`,
+            );
+            setModal(null);
+            recargar();
+          }}
+        />
+      )}
+
+      {editando && (
+        <ModalProducto
+          producto={producto}
+          onCerrar={() => setEditando(false)}
+          onGuardado={(guardado) => {
+            setEditando(false);
+            setAviso(`Producto actualizado: ${guardado.nombre}.`);
+            recargar();
+          }}
+        />
+      )}
+
+      {agregandoCompat && (
+        <ModalCompatibilidad
+          producto={producto}
+          onCerrar={() => setAgregandoCompat(false)}
+          onGuardado={(nombre) => {
+            setAgregandoCompat(false);
+            setAviso(`Vehículo agregado: ${nombre}.`);
+            recargar();
+          }}
+        />
+      )}
+
+      <Aviso
+        mensaje={aviso}
+        visible={aviso !== null}
+        onCerrar={() => setAviso(null)}
+      />
     </>
-  )
+  );
 }

@@ -1,18 +1,19 @@
-import { NavLink, useLocation } from 'react-router-dom'
-import { useAuth } from '../context/useAuth'
+import { NavLink, useLocation } from "react-router-dom";
+import { useAuth } from "../context/useAuth";
 
 // Cierra el menú lateral en móvil. Si el menú no está abierto (escritorio), no hace nada.
 function cerrarMenu() {
-  const menu = document.getElementById('menu')
-  window.bootstrap?.Offcanvas.getInstance(menu)?.hide()
+  const menu = document.getElementById("menu");
+  window.bootstrap?.Offcanvas.getInstance(menu)?.hide();
 }
 
 export default function MenuLateral() {
-  const { usuario, cerrarSesion } = useAuth()
-  const { pathname } = useLocation()
+  const { usuario, cerrarSesion } = useAuth();
+  const { pathname } = useLocation();
 
   // El detalle de un repuesto pertenece a la sección de inventario
-  const inventarioActivo = (isActive) => isActive || pathname.startsWith('/producto/')
+  const inventarioActivo = (isActive) =>
+    isActive || pathname.startsWith("/producto/");
 
   return (
     <aside className="menu-lateral">
@@ -59,13 +60,25 @@ export default function MenuLateral() {
             >
               <i className="bi bi-car-front"></i> Buscar por vehículo
             </NavLink>
+            <NavLink
+              to="/catalogo"
+              className={({ isActive }) =>
+                `menu-enlace ${isActive ? "activo" : ""}`
+              }
+              onClick={cerrarMenu}
+            >
+              <i className="bi bi-card-list"></i> Catálogo de vehículos
+            </NavLink>
           </nav>
 
           <div className="menu-usuario">
             <div className="menu-usuario-nombre">
               <i className="bi bi-person-circle"></i> {usuario?.nombre}
             </div>
-            <button className="btn btn-sm btn-outline-light w-100" onClick={cerrarSesion}>
+            <button
+              className="btn btn-sm btn-outline-light w-100"
+              onClick={cerrarSesion}
+            >
               <i className="bi bi-box-arrow-left"></i> Cerrar sesión
             </button>
           </div>

@@ -31,8 +31,9 @@ export async function obtenerMovimientos(limite = 6) {
   }))
 }
 
-export function obtenerVehiculos() {
-  return peticion('/vehiculos')
+export async function obtenerVehiculos() {
+  const vehiculos = await peticion('/vehiculos')
+  return vehiculos.map((v) => ({ ...v, id: v._id }))
 }
 
 // Devuelve [{ producto, compat }]; los agotados vienen al final
@@ -40,4 +41,35 @@ export async function buscarCompatibles(marca, modelo, anio) {
   const params = new URLSearchParams({ marca, modelo, anio })
   const resultados = await peticion(`/productos/compatibles?${params}`)
   return resultados.map(({ producto, compat }) => ({ producto: aProducto(producto), compat }))
+}
+
+export function registrarMovimiento(tipo, productoId, cantidad) {
+  return peticion('/movimientos', {
+    method: 'POST',
+    body: { tipo, productoId, cantidad },
+  })
+}
+
+export async function crearProducto(datos) {
+  const producto = await peticion('/productos', { method: 'POST', body: datos })
+  return aProducto(producto)
+}
+
+export async function actualizarProducto(id, datos) {
+  const producto = await peticion(`/productos/${encodeURIComponent(id)}`, { method: 'PUT', body: datos })
+  return aProducto(producto)
+}
+
+export async function crearVehiculo(datos) {
+  const vehiculo = await peticion('/vehiculos', { method: 'POST', body: datos })
+  return { ...vehiculo, id: vehiculo._id }
+}
+
+export async function actualizarVehiculo(id, datos) {
+  const vehiculo = await peticion(`/vehiculos/${encodeURIComponent(id)}`, { method: 'PUT', body: datos })
+  return { ...vehiculo, id: vehiculo._id }
+}
+
+export function eliminarVehiculo(id) {
+  return peticion(`/vehiculos/${encodeURIComponent(id)}`, { method: 'DELETE' })
 }

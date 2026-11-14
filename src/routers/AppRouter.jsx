@@ -5,6 +5,7 @@ import LayoutPrivado from '../components/LayoutPrivado'
 import Login from '../pages/Login'
 import Dashboard from '../pages/Dashboard'
 import Vehiculos from '../pages/Vehiculos'
+import CatalogoVehiculos from '../pages/CatalogoVehiculos'
 import Producto from '../pages/Producto'
 
 export default function AppRouter() {
@@ -18,6 +19,7 @@ export default function AppRouter() {
         <Route element={<LayoutPrivado />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/vehiculos" element={<Vehiculos />} />
+          <Route path="/catalogo" element={<CatalogoVehiculos />} />
           <Route path="/producto/:id" element={<Producto />} />
         </Route>
       </Route>

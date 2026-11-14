@@ -6,6 +6,7 @@ import TablaInventario from '../components/TablaInventario'
 import ListaAlertas from '../components/ListaAlertas'
 import ListaMovimientos from '../components/ListaMovimientos'
 import EstadoCarga from '../components/EstadoCarga'
+import ModalProducto from '../components/ModalProducto'
 import Aviso from '../components/Aviso'
 
 // Definida fuera del componente para que useCarga reciba siempre la misma función
@@ -20,7 +21,8 @@ async function cargarDashboard() {
 
 export default function Dashboard() {
   const { datos, cargando, error, recargar } = useCarga(cargarDashboard)
-  const [avisoVisible, setAvisoVisible] = useState(false)
+  const [modalProducto, setModalProducto] = useState(false)
+  const [aviso, setAviso] = useState(null)
 
   return (
     <>
@@ -41,7 +43,7 @@ export default function Dashboard() {
 
             <div className="row g-4">
               <section className="col-12 col-xl-8">
-                <TablaInventario productos={datos.productos} onAgregar={() => setAvisoVisible(true)} />
+                <TablaInventario productos={datos.productos} onAgregar={() => setModalProducto(true)} />
               </section>
 
               <div className="col-12 col-xl-4 d-flex flex-column gap-4">
@@ -53,11 +55,18 @@ export default function Dashboard() {
         )}
       </EstadoCarga>
 
-      <Aviso
-        mensaje="Agregar productos estará disponible en una próxima versión."
-        visible={avisoVisible}
-        onCerrar={() => setAvisoVisible(false)}
-      />
+      {modalProducto && (
+        <ModalProducto
+          onCerrar={() => setModalProducto(false)}
+          onGuardado={(producto) => {
+            setModalProducto(false)
+            setAviso(`Producto creado: ${producto.nombre}.`)
+            recargar()
+          }}
+        />
+      )}
+
+      <Aviso mensaje={aviso} visible={aviso !== null} onCerrar={() => setAviso(null)} />
     </>
   )
 }

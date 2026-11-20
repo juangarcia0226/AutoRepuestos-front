@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { obtenerVehiculos, eliminarVehiculo } from "../services/inventarioApi";
 import { useCarga } from "../hooks/useCarga";
+import { useAuth } from "../context/useAuth";
 import TablaVehiculos from "../components/TablaVehiculos";
 import ModalVehiculo from "../components/ModalVehiculo";
 import EstadoCarga from "../components/EstadoCarga";
@@ -13,6 +14,7 @@ export default function CatalogoVehiculos() {
     error,
     recargar,
   } = useCarga(obtenerVehiculos);
+  const { esAdmin } = useAuth();
   const [modal, setModal] = useState(null); // null | { vehiculo: objeto | null }
   const [aviso, setAviso] = useState(null);
 
@@ -35,9 +37,11 @@ export default function CatalogoVehiculos() {
         {vehiculos && (
           <TablaVehiculos
             vehiculos={vehiculos}
-            onAgregar={() => setModal({ vehiculo: null })}
-            onEditar={(vehiculo) => setModal({ vehiculo })}
-            onEliminar={eliminar}
+            onAgregar={esAdmin ? () => setModal({ vehiculo: null }) : undefined}
+            onEditar={
+              esAdmin ? (vehiculo) => setModal({ vehiculo }) : undefined
+            }
+            onEliminar={esAdmin ? eliminar : undefined}
           />
         )}
       </EstadoCarga>

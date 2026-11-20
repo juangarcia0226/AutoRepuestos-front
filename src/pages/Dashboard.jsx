@@ -6,6 +6,7 @@ import {
   obtenerMovimientos,
 } from "../services/inventarioApi";
 import { useCarga } from "../hooks/useCarga";
+import { useAuth } from "../context/useAuth";
 import TarjetaResumen from "../components/TarjetaResumen";
 import TablaInventario from "../components/TablaInventario";
 import ListaAlertas from "../components/ListaAlertas";
@@ -26,6 +27,7 @@ async function cargarDashboard() {
 
 export default function Dashboard() {
   const { datos, cargando, error, recargar } = useCarga(cargarDashboard);
+  const { esAdmin } = useAuth();
   const [modalProducto, setModalProducto] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -76,7 +78,7 @@ export default function Dashboard() {
               <section className="col-12 col-xl-8">
                 <TablaInventario
                   productos={datos.productos}
-                  onAgregar={() => setModalProducto(true)}
+                  onAgregar={esAdmin ? () => setModalProducto(true) : undefined}
                 />
               </section>
 

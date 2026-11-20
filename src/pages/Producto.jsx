@@ -6,6 +6,7 @@ import {
   eliminarProducto,
 } from "../services/inventarioApi";
 import { useCarga } from "../hooks/useCarga";
+import { useAuth } from "../context/useAuth";
 import { formatearPrecio } from "../utils/formato";
 import { estadoStock } from "../utils/estadoStock";
 import TablaCompatibles from "../components/TablaCompatibles";
@@ -37,6 +38,7 @@ export default function Producto() {
   const [editando, setEditando] = useState(false);
   const [agregandoCompat, setAgregandoCompat] = useState(false);
   const navigate = useNavigate();
+  const { esAdmin } = useAuth();
   const [confirmandoEliminar, setConfirmandoEliminar] = useState(false);
   const [eliminando, setEliminando] = useState(false);
   const [errorEliminar, setErrorEliminar] = useState("");
@@ -158,13 +160,15 @@ export default function Producto() {
               </div>
 
               <div className="prod-acciones">
-                <button
-                  type="button"
-                  className="btn btn-señal"
-                  onClick={() => setEditando(true)}
-                >
-                  <i className="bi bi-pencil-square"></i> Editar
-                </button>
+                {esAdmin && (
+                  <button
+                    type="button"
+                    className="btn btn-señal"
+                    onClick={() => setEditando(true)}
+                  >
+                    <i className="bi bi-pencil-square"></i> Editar
+                  </button>
+                )}
                 <button
                   type="button"
                   className="btn btn-outline-dark"
@@ -180,16 +184,18 @@ export default function Producto() {
                 >
                   <i className="bi bi-box-arrow-in-down"></i> Registrar entrada
                 </button>
-                <button
-                  type="button"
-                  className="btn btn-outline-danger"
-                  onClick={() => {
-                    setErrorEliminar("");
-                    setConfirmandoEliminar(true);
-                  }}
-                >
-                  <i className="bi bi-trash"></i> Eliminar
-                </button>
+                {esAdmin && (
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger"
+                    onClick={() => {
+                      setErrorEliminar("");
+                      setConfirmandoEliminar(true);
+                    }}
+                  >
+                    <i className="bi bi-trash"></i> Eliminar
+                  </button>
+                )}
                 <Link
                   className="btn btn-outline-secondary ms-lg-auto"
                   to="/dashboard"
@@ -204,8 +210,8 @@ export default function Producto() {
 
       <TablaCompatibles
         vehiculos={producto.compatibilidad ?? []}
-        onAgregar={() => setAgregandoCompat(true)}
-        onQuitar={quitarCompatibilidad}
+        onAgregar={esAdmin ? () => setAgregandoCompat(true) : undefined}
+        onQuitar={esAdmin ? quitarCompatibilidad : undefined}
       />
 
       {modal && (

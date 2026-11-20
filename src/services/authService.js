@@ -7,3 +7,15 @@ export function login(correo, clave) {
     body: { correo: correo.trim(), clave },
   })
 }
+
+// Datos actuales del usuario de la sesión (incluye el rol vigente)
+export function obtenerPerfil() {
+  return peticion('/auth/perfil')
+}
+
+export function cambiarClave(claveActual, claveNueva) {
+  return peticion('/auth/clave', {
+    method: 'PUT',
+    body: { claveActual, claveNueva },
+  })
+}

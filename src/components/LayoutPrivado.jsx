@@ -1,20 +1,32 @@
+import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import MenuLateral from './MenuLateral'
+import ModalClave from './ModalClave'
+import Aviso from './Aviso'
 
 const TITULOS = [
   { ruta: '/dashboard', titulo: 'Inventario' },
   { ruta: '/vehiculos', titulo: 'Buscar por vehículo' },
-  { ruta: '/producto', titulo: 'Detalle del repuesto' },
   { ruta: '/catalogo', titulo: 'Catálogo de vehículos' },
+  { ruta: '/usuarios', titulo: 'Usuarios' },
+  { ruta: '/producto', titulo: 'Detalle del repuesto' },
 ]
 
 export default function LayoutPrivado() {
   const { pathname } = useLocation()
   const titulo = TITULOS.find((t) => pathname.startsWith(t.ruta))?.titulo ?? 'AutoRepuestos'
+  const [cambiandoClave, setCambiandoClave] = useState(false)
+  const [aviso, setAviso] = useState(null)
+
+  // Título de la pestaña del navegador
+  useEffect(() => {
+    document.title = `${titulo} | AutoRepuestos`
+    return () => { document.title = 'AutoRepuestos' }
+  }, [titulo])
 
   return (
     <>
-      <MenuLateral />
+      <MenuLateral onCambiarClave={() => setCambiandoClave(true)} />
 
       <div className="contenido-principal">
         <header className="barra-superior">
@@ -35,6 +47,18 @@ export default function LayoutPrivado() {
           <Outlet />
         </main>
       </div>
+
+      {cambiandoClave && (
+        <ModalClave
+          onCerrar={() => setCambiandoClave(false)}
+          onCambiada={() => {
+            setCambiandoClave(false)
+            setAviso('Contraseña actualizada.')
+          }}
+        />
+      )}
+
+      <Aviso mensaje={aviso} visible={aviso !== null} onCerrar={() => setAviso(null)} />
     </>
   )
 }

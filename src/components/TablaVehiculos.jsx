@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 export default function TablaVehiculos({ vehiculos, onAgregar, onEditar, onEliminar }) {
   const [busqueda, setBusqueda] = useState('')
+  const hayAcciones = Boolean(onEditar || onEliminar)
 
   const texto = busqueda.trim().toLowerCase()
   const filtrados = vehiculos.filter((v) =>
@@ -24,9 +25,11 @@ export default function TablaVehiculos({ vehiculos, onAgregar, onEditar, onElimi
               onChange={(e) => setBusqueda(e.target.value)}
             />
           </div>
-          <button type="button" className="btn btn-señal" onClick={onAgregar}>
-            <i className="bi bi-plus-lg"></i> Agregar vehículo
-          </button>
+          {onAgregar && (
+            <button type="button" className="btn btn-señal" onClick={onAgregar}>
+              <i className="bi bi-plus-lg"></i> Agregar vehículo
+            </button>
+          )}
         </div>
       </div>
 
@@ -38,7 +41,7 @@ export default function TablaVehiculos({ vehiculos, onAgregar, onEditar, onElimi
               <th>Modelo</th>
               <th>Años</th>
               <th>Productos</th>
-              <th className="text-end">Acciones</th>
+              {hayAcciones && <th className="text-end">Acciones</th>}
             </tr>
           </thead>
           <tbody>
@@ -52,26 +55,32 @@ export default function TablaVehiculos({ vehiculos, onAgregar, onEditar, onElimi
                     {v.productos}
                   </span>
                 </td>
-                <td className="text-end text-nowrap">
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-outline-dark me-1"
-                    aria-label={`Editar ${v.marca} ${v.modelo}`}
-                    onClick={() => onEditar(v)}
-                  >
-                    <i className="bi bi-pencil-square"></i>
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-outline-danger"
-                    aria-label={`Eliminar ${v.marca} ${v.modelo}`}
-                    title={v.productos > 0 ? 'En uso: quítalo primero de los productos' : 'Eliminar'}
-                    disabled={v.productos > 0}
-                    onClick={() => onEliminar(v)}
-                  >
-                    <i className="bi bi-trash"></i>
-                  </button>
-                </td>
+                {hayAcciones && (
+                  <td className="text-end text-nowrap">
+                    {onEditar && (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-dark me-1"
+                        aria-label={`Editar ${v.marca} ${v.modelo}`}
+                        onClick={() => onEditar(v)}
+                      >
+                        <i className="bi bi-pencil-square"></i>
+                      </button>
+                    )}
+                    {onEliminar && (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-danger"
+                        aria-label={`Eliminar ${v.marca} ${v.modelo}`}
+                        title={v.productos > 0 ? 'En uso: quítalo primero de los productos' : 'Eliminar'}
+                        disabled={v.productos > 0}
+                        onClick={() => onEliminar(v)}
+                      >
+                        <i className="bi bi-trash"></i>
+                      </button>
+                    )}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

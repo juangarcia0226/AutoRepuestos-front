@@ -1,6 +1,10 @@
 import { useCallback, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { obtenerProducto, actualizarProducto } from "../services/inventarioApi";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  obtenerProducto,
+  actualizarProducto,
+  eliminarProducto,
+} from "../services/inventarioApi";
 import { useCarga } from "../hooks/useCarga";
 import { formatearPrecio } from "../utils/formato";
 import { estadoStock } from "../utils/estadoStock";
@@ -10,6 +14,7 @@ import Aviso from "../components/Aviso";
 import ModalMovimiento from "../components/ModalMovimiento";
 import ModalProducto from "../components/ModalProducto";
 import ModalCompatibilidad from "../components/ModalCompatibilidad";
+import ModalConfirmar from "../components/ModalConfirmar";
 
 // Ícono de marcador de posición según la categoría (mientras no haya fotos reales)
 const ICONOS = {
@@ -31,6 +36,24 @@ export default function Producto() {
   const [modal, setModal] = useState(null); // null | 'entrada' | 'salida'
   const [editando, setEditando] = useState(false);
   const [agregandoCompat, setAgregandoCompat] = useState(false);
+  const navigate = useNavigate();
+  const [confirmandoEliminar, setConfirmandoEliminar] = useState(false);
+  const [eliminando, setEliminando] = useState(false);
+  const [errorEliminar, setErrorEliminar] = useState("");
+
+  async function eliminar() {
+    setEliminando(true);
+    setErrorEliminar("");
+    try {
+      await eliminarProducto(producto.id);
+      navigate("/dashboard", {
+        state: { aviso: `Producto eliminado: ${producto.nombre}.` },
+      });
+    } catch (e) {
+      setErrorEliminar(e.message);
+      setEliminando(false);
+    }
+  }
 
   async function quitarCompatibilidad(vehiculo) {
     const nombre = `${vehiculo.marca} ${vehiculo.modelo}`;
@@ -157,6 +180,16 @@ export default function Producto() {
                 >
                   <i className="bi bi-box-arrow-in-down"></i> Registrar entrada
                 </button>
+                <button
+                  type="button"
+                  className="btn btn-outline-danger"
+                  onClick={() => {
+                    setErrorEliminar("");
+                    setConfirmandoEliminar(true);
+                  }}
+                >
+                  <i className="bi bi-trash"></i> Eliminar
+                </button>
                 <Link
                   className="btn btn-outline-secondary ms-lg-auto"
                   to="/dashboard"
@@ -211,6 +244,29 @@ export default function Producto() {
             setAviso(`Vehículo agregado: ${nombre}.`);
             recargar();
           }}
+        />
+      )}
+
+      {confirmandoEliminar && (
+        <ModalConfirmar
+          titulo="Eliminar producto"
+          mensaje={
+            <>
+              <p>
+                ¿Seguro que quieres eliminar <strong>{producto.nombre}</strong>{" "}
+                (ref. {producto.referencia})?
+              </p>
+              <p className="mb-0 text-secondary">
+                Esta acción no se puede deshacer. Sus movimientos anteriores
+                seguirán en el historial como «Producto eliminado».
+              </p>
+            </>
+          }
+          textoConfirmar="Eliminar producto"
+          enviando={eliminando}
+          error={errorEliminar}
+          onConfirmar={eliminar}
+          onCerrar={() => setConfirmandoEliminar(false)}
         />
       )}
 

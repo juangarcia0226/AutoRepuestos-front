@@ -73,3 +73,7 @@ export async function actualizarVehiculo(id, datos) {
 export function eliminarVehiculo(id) {
   return peticion(`/vehiculos/${encodeURIComponent(id)}`, { method: 'DELETE' })
 }
+
+export function eliminarProducto(id) {
+  return peticion(`/productos/${encodeURIComponent(id)}`, { method: 'DELETE' })
+}

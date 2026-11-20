@@ -1,13 +1,18 @@
-import { useState } from 'react'
-import { obtenerProductos, obtenerResumen, obtenerMovimientos } from '../services/inventarioApi'
-import { useCarga } from '../hooks/useCarga'
-import TarjetaResumen from '../components/TarjetaResumen'
-import TablaInventario from '../components/TablaInventario'
-import ListaAlertas from '../components/ListaAlertas'
-import ListaMovimientos from '../components/ListaMovimientos'
-import EstadoCarga from '../components/EstadoCarga'
-import ModalProducto from '../components/ModalProducto'
-import Aviso from '../components/Aviso'
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  obtenerProductos,
+  obtenerResumen,
+  obtenerMovimientos,
+} from "../services/inventarioApi";
+import { useCarga } from "../hooks/useCarga";
+import TarjetaResumen from "../components/TarjetaResumen";
+import TablaInventario from "../components/TablaInventario";
+import ListaAlertas from "../components/ListaAlertas";
+import ListaMovimientos from "../components/ListaMovimientos";
+import EstadoCarga from "../components/EstadoCarga";
+import ModalProducto from "../components/ModalProducto";
+import Aviso from "../components/Aviso";
 
 // Definida fuera del componente para que useCarga reciba siempre la misma función
 async function cargarDashboard() {
@@ -15,35 +20,64 @@ async function cargarDashboard() {
     obtenerProductos(),
     obtenerResumen(),
     obtenerMovimientos(6),
-  ])
-  return { productos, resumen, movimientos }
+  ]);
+  return { productos, resumen, movimientos };
 }
 
 export default function Dashboard() {
-  const { datos, cargando, error, recargar } = useCarga(cargarDashboard)
-  const [modalProducto, setModalProducto] = useState(false)
-  const [aviso, setAviso] = useState(null)
+  const { datos, cargando, error, recargar } = useCarga(cargarDashboard);
+  const [modalProducto, setModalProducto] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  // Si se llega desde otra pantalla con un aviso (por ejemplo, al eliminar un producto), se muestra
+  const [aviso, setAviso] = useState(() => location.state?.aviso ?? null);
+
+  // Limpia el estado de la navegación para que el aviso no reaparezca al recargar la página
+  useEffect(() => {
+    if (location.state?.aviso)
+      navigate(location.pathname, { replace: true, state: null });
+  }, [location, navigate]);
 
   return (
     <>
       <EstadoCarga cargando={cargando} error={error} onReintentar={recargar}>
         {datos && (
           <>
-            <section className="row g-3 mb-4" aria-label="Resumen del inventario">
+            <section
+              className="row g-3 mb-4"
+              aria-label="Resumen del inventario"
+            >
               <div className="col-12 col-md-4">
-                <TarjetaResumen valor={datos.resumen.totalProductos} texto="Total de productos" icono="bi-box-seam" />
+                <TarjetaResumen
+                  valor={datos.resumen.totalProductos}
+                  texto="Total de productos"
+                  icono="bi-box-seam"
+                />
               </div>
               <div className="col-12 col-md-4">
-                <TarjetaResumen valor={datos.resumen.totalBajo} texto="Con stock bajo" icono="bi-exclamation-triangle" variante="bajo" />
+                <TarjetaResumen
+                  valor={datos.resumen.totalBajo}
+                  texto="Con stock bajo"
+                  icono="bi-exclamation-triangle"
+                  variante="bajo"
+                />
               </div>
               <div className="col-12 col-md-4">
-                <TarjetaResumen valor={datos.resumen.totalAgotados} texto="Agotados" icono="bi-x-octagon" variante="agotado" />
+                <TarjetaResumen
+                  valor={datos.resumen.totalAgotados}
+                  texto="Agotados"
+                  icono="bi-x-octagon"
+                  variante="agotado"
+                />
               </div>
             </section>
 
             <div className="row g-4">
               <section className="col-12 col-xl-8">
-                <TablaInventario productos={datos.productos} onAgregar={() => setModalProducto(true)} />
+                <TablaInventario
+                  productos={datos.productos}
+                  onAgregar={() => setModalProducto(true)}
+                />
               </section>
 
               <div className="col-12 col-xl-4 d-flex flex-column gap-4">
@@ -59,14 +93,18 @@ export default function Dashboard() {
         <ModalProducto
           onCerrar={() => setModalProducto(false)}
           onGuardado={(producto) => {
-            setModalProducto(false)
-            setAviso(`Producto creado: ${producto.nombre}.`)
-            recargar()
+            setModalProducto(false);
+            setAviso(`Producto creado: ${producto.nombre}.`);
+            recargar();
           }}
         />
       )}
 
-      <Aviso mensaje={aviso} visible={aviso !== null} onCerrar={() => setAviso(null)} />
+      <Aviso
+        mensaje={aviso}
+        visible={aviso !== null}
+        onCerrar={() => setAviso(null)}
+      />
     </>
-  )
+  );
 }

@@ -148,10 +148,12 @@ export default function Login() {
             </button>
           </form>
 
-          <p className="credenciales-demo">
-            <i className="bi bi-info-circle"></i> Cuenta de prueba:{" "}
-            <strong>admin@autorepuestos.com</strong> / <strong>123456</strong>
-          </p>
+          {import.meta.env.DEV && (
+            <p className="credenciales-demo">
+              <i className="bi bi-info-circle"></i> Cuenta de prueba:{" "}
+              <strong>admin@autorepuestos.com</strong> / <strong>123456</strong>
+            </p>
+          )}
         </div>
       </section>
     </main>
